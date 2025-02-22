@@ -13,19 +13,34 @@ This Nextflow pipeline performs NGS data analysis including quality control, rea
 ## Installation
 
 1. Clone the repository:
-```bash
+```bashOptional arguments:
+
+    --outdir: Output directory (default: results)
+    --trim_minlen: Minimum read length after trimming (default: 50)
+    --trim_quality: Minimum base quality during trimming (default: 20
 git clone <repository-url>
 cd ngs-pipeline
 ```
 
 2. Ensure Docker is installed and running on your system
 
-## Pipeline Components
-- FastQC: Quality control analysis
-- Fastp: Read trimming and filtering
-- Minimap2: Read alignment
-- Samtools: BAM file processing
-- VarScan: Variant calling
+## Pipeline Steps
+
+1. Quality Control
+   - Runs FastQC for initial read quality assessment
+   - Uses FastP for read trimming and filtering
+
+2. Read Alignment
+   - Indexes the reference genome with Minimap2
+   - Aligns reads to the reference genome
+
+3. BAM Processing
+   - Converts SAM to BAM and sorts the alignments
+   - Indexes BAM files for variant calling
+
+4. Variant Calling
+   - Uses Samtools to generate mpileup files
+   - Calls variants using VarScan
 
 ## Resource Configuration
 
@@ -70,14 +85,11 @@ nextflow run main.nf \
 - `--reads`: Path to input FASTQ files (required)
 - `--reference`: Path to reference genome (required)
 - `--outdir`: Output directory (default: results)
-- `--fastp_trim_front1`: Trim bases from front of read 1 (default: 13)
-- `--fastp_trim_tail1`: Trim bases from tail of read 1 (default: 10)
-- `--varscan_min_coverage`: Minimum read depth (default: 8)
-- `--varscan_min_var_freq`: Minimum variant frequency (default: 0.1)
+- `--trim_minlen`: Minimum read length after trimming (default: 50)
+- `--trim_quality`: Minimum base quality during trimming (default: 20
 
 ### Execution Profiles
 - Default: Standard execution
-- Test: Run with test dataset
 - Dryrun: Validate pipeline without execution
 
 Example with profile:
@@ -85,7 +97,7 @@ Example with profile:
 nextflow run main.nf \
     --reads "/path/to/reads/*_{1,2}.fastq.gz" \
     --reference /path/to/reference.fa \
-    -profile test
+    -profile dryrun
 ```
 
 ## Output Structure
