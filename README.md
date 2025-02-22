@@ -51,20 +51,176 @@ process {
 ```
 
 ### Process-Specific Resources
-For optimal performance, configure resources for specific processes:
+Modify the nextflow.config to include resource specifications:
 
 ```nextflow
+// Existing configuration
+params {
+    reads = null          
+    reference = null
+    outdir = "results"
+    help = false
+    
+    // fastp parameters
+    fastp_trim_front1 = 13    
+    fastp_trim_tail1 = 10     
+    fastp_trim_front2 = 13    
+    fastp_trim_tail2 = 10
+    
+    // VarScan parameters
+    varscan_min_coverage = 8
+    varscan_min_var_freq = 0.1
+    varscan_p_value = 0.05
+}
+
+// Docker configuration
+docker {
+    enabled = true
+    runOptions = '-u $(id -u):$(id -g)'
+}
+
+// Default process configuration
 process {
+    executor = 'local'
+    errorStrategy = { task.exitStatus in [143,137,104,134,139] ? 'retry' : 'finish' }
+    maxRetries = 3
+
+    // Default resources for all processes
+    cpus = 2
+    memory = 4.GB
+    time = '2h'
+
+    // Process-specific resources
+    withName: 'FASTQC' {
+        cpus = 2
+        memory = 4.GB
+        time = '1h'
+    }
+
+    withName: 'FASTP' {
+        cpus = 4
+        memory = 8.GB
+        time = '2h'
+    }
+
+    withName: 'MINIMAP2_INDEX' {
+        cpus = 2
+        memory = 8.GB
+        time = '2h'
+    }
+
     withName: 'MINIMAP2_ALIGN' {
         cpus = 8
-        memory = '16 GB'
+        memory = 16.GB
+        time = '4h'
     }
+
+    withName: 'SAM_TO_BAM' {
+        cpus = 4
+        memory = 8.GB
+        time = '2h'
+    }
+
+    withName: 'SAMTOOLS_MPILEUP' {
+        cpus = 4
+        memory = 8.GB
+        time = '2h'
+    }
+
     withName: 'VARSCAN_CALL' {
         cpus = 4
-        memory = '8 GB'
+        memory = 8.GB
+        time = '2h'
+    }
+}
+
+// Including process-specific configurations
+includeConfig 'process.config'
+
+// Execution profiles
+profiles {
+    // Standard profile
+    standard {
+        process {
+            cpus = 2
+            memory = 4.GB
+        }
+    }
+
+    // High-performance profile
+    highperf {
+        process {
+            cpus = 8
+            memory = 32.GB
+        }
+    }
+
+    // Low-resource profile
+    lowmem {
+        process {
+            cpus = 1
+            memory = 2.GB
+        }
+    }
+
+    test {
+        params.reads = "$baseDir/test/*_{1,2}.fastq.gz"
+        params.reference = "$baseDir/test/reference.fa"
+    }
+    
+    dryrun {
+        process.executor = 'local'
+        executor.queueSize = 1
+        executor.submitRateLimit = '1/s'
+        dag.enabled = true
+        executor.pollInterval = '10sec'
+        dryRun = true
     }
 }
 ```
+
+Key points about this configuration:
+
+1. **Default Resources**: Set baseline resources for all processes
+   ```nextflow
+   process {
+       cpus = 2
+       memory = 4.GB
+       time = '2h'
+   }
+   ```
+
+2. **Process-Specific Resources**: Each process can have its own resource requirements
+   ```nextflow
+   withName: 'MINIMAP2_ALIGN' {
+       cpus = 8
+       memory = 16.GB
+       time = '4h'
+   }
+   ```
+
+3. **Resource Profiles**: Different profiles for various computing environments
+   - standard: Default resources
+   - highperf: High-performance computing
+   - lowmem: Low-resource environments
+
+To use these configurations, you can run the pipeline with:
+
+```bash
+# Use standard profile
+nextflow run main.nf --reads "..." --reference "..."
+
+# Use high-performance profile
+nextflow run main.nf --reads "..." --reference "..." -profile highperf
+
+# Use low-memory profile
+nextflow run main.nf --reads "..." --reference "..." -profile lowmem
+```
+
+The resources are specified using these units:
+- Memory: Can use GB, MB, KB (e.g., 4.GB, 512.MB)
+- Time: Can use h, m, s (e.g., '2h', '30m')
+- CPUs: Whole numbers
 
 ## Usage
 
