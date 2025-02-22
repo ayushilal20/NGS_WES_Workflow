@@ -15,7 +15,7 @@ This Nextflow pipeline performs NGS data analysis including quality control, rea
 1. Clone the repository:
 ```bashOptional arguments:
 git clone <repository-url>
-cd ngs-pipeline
+cd ngs_pipeline
 ```
 2. Ensure Docker is installed and running on your system
 
