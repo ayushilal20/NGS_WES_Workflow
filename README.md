@@ -37,6 +37,49 @@ cd ngs_pipeline
    - Uses Samtools to generate mpileup files
    - Calls variants using VarScan
 
+## Usage
+
+### Basic Command
+```bash
+nextflow run main.nf \
+    --reads "/path/to/reads/*_{1,2}.fastq.gz" \
+    --reference /path/to/reference.fa \
+    --outdir results
+```
+
+### Available Parameters
+- `--reads`: Path to input FASTQ files (required)
+- `--reference`: Path to reference genome (required)
+- `--outdir`: Output directory (default: results)
+- `--trim_minlen`: Minimum read length after trimming (default: 50)
+- `--trim_quality`: Minimum base quality during trimming (default: 20
+
+### Execution Profiles
+- Default: Standard execution
+- Dryrun: Validate pipeline without execution
+
+Example with profile:
+```bash
+nextflow run main.nf \
+    --reads "/path/to/reads/*_{1,2}.fastq.gz" \
+    --reference /path/to/reference.fa \
+    -profile dryrun
+```
+
+## Output Structure
+```
+results/
+├── fastqc/           # Quality control reports
+├── trimmed/          # Trimmed reads
+├── aligned/          # Alignment files
+│   ├── *.sam
+│   ├── *.bam
+│   └── *.bai
+├── variants/         # Called variants
+│   └── *.vcf
+└── reference/        # Indexed reference
+```
+
 ## Resource Configuration
 
 The pipeline resources can be configured in `nextflow.config`. Adjust these settings based on your system specifications:
@@ -209,49 +252,6 @@ The resources are specified using these units:
 - Memory: Can use GB, MB, KB (e.g., 4.GB, 512.MB)
 - Time: Can use h, m, s (e.g., '2h', '30m')
 - CPUs: Whole numbers
-
-## Usage
-
-### Basic Command
-```bash
-nextflow run main.nf \
-    --reads "/path/to/reads/*_{1,2}.fastq.gz" \
-    --reference /path/to/reference.fa \
-    --outdir results
-```
-
-### Available Parameters
-- `--reads`: Path to input FASTQ files (required)
-- `--reference`: Path to reference genome (required)
-- `--outdir`: Output directory (default: results)
-- `--trim_minlen`: Minimum read length after trimming (default: 50)
-- `--trim_quality`: Minimum base quality during trimming (default: 20
-
-### Execution Profiles
-- Default: Standard execution
-- Dryrun: Validate pipeline without execution
-
-Example with profile:
-```bash
-nextflow run main.nf \
-    --reads "/path/to/reads/*_{1,2}.fastq.gz" \
-    --reference /path/to/reference.fa \
-    -profile dryrun
-```
-
-## Output Structure
-```
-results/
-├── fastqc/           # Quality control reports
-├── trimmed/          # Trimmed reads
-├── aligned/          # Alignment files
-│   ├── *.sam
-│   ├── *.bam
-│   └── *.bai
-├── variants/         # Called variants
-│   └── *.vcf
-└── reference/        # Indexed reference
-```
 
 ## Troubleshooting
 
