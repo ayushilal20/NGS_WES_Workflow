@@ -109,23 +109,6 @@ results/
 └── reference/        # Indexed reference
 ```
 
-## Performance Optimization
-
-### Memory Usage
-- For whole genome sequencing: Recommend 32GB+ RAM
-- For exome/targeted sequencing: Minimum 16GB RAM
-- Adjust process-specific memory in `nextflow.config`
-
-### Storage Requirements
-- Raw data: ~10GB per sample
-- Intermediate files: 2-3x raw data size
-- Final results: ~5GB per sample
-
-### CPU Utilization
-- Recommended: 8+ cores for optimal performance
-- Minimum: 4 cores
-- Configure process-specific CPU usage in config file
-
 ## Troubleshooting
 
 ### Common Issues
