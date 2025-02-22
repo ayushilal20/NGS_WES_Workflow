@@ -1,4 +1,4 @@
-# NGS Pipeline Documentation
+# Nextflow Pipeline for Whole Exome Sequencing (WES) Analysis
 
 ## Overview
 This Nextflow pipeline performs NGS data analysis including quality control, read trimming, alignment, and variant calling. The pipeline uses Docker containers for reproducibility and supports both single-end and paired-end sequencing data.
