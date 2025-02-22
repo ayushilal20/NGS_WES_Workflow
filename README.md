@@ -41,18 +41,6 @@ cd ngs_pipeline
 
 The pipeline resources can be configured in `nextflow.config`. Adjust these settings based on your system specifications:
 
-### Basic Resource Configuration
-```nextflow
-process {
-    cpus = 4          // Number of CPU cores per process
-    memory = '8 GB'   // Memory per process
-    time = '2h'       // Time limit per process
-}
-```
-
-### Process-Specific Resources
-Modify the nextflow.config to include resource specifications:
-
 ```nextflow
 // Existing configuration
 params {
