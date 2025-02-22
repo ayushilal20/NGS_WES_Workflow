@@ -14,14 +14,9 @@ This Nextflow pipeline performs NGS data analysis including quality control, rea
 
 1. Clone the repository:
 ```bashOptional arguments:
-
-    --outdir: Output directory (default: results)
-    --trim_minlen: Minimum read length after trimming (default: 50)
-    --trim_quality: Minimum base quality during trimming (default: 20
 git clone <repository-url>
 cd ngs-pipeline
 ```
-
 2. Ensure Docker is installed and running on your system
 
 ## Pipeline Steps
