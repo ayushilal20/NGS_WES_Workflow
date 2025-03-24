@@ -268,5 +268,3 @@ The resources are specified using these units:
    - Check error logs in `.nextflow.log`
    - Use `-resume` flag to restart from last successful step
 
-## Support
-For issues and questions, please open an issue in the repository's issue tracker.
